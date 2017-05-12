@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     
+<meta charset="UTF-8">      
+<meta name="viewport" content="initial-scale=1.0,user-scalable=no,minimal-ui">  
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">  
+
+    <meta name="keywords" content="yimo,易墨,一个爱折腾的程序猿">
+
+
+    <meta name="description" content="一个叫做易墨的程序猿使用node-thinkjs构建的个人博客">
+
+<title>asp.net mvc项目自定义区域 | AncientWind</title>
+<link rel="stylesheet" type="text/css" href="/static/css/animate.min.css">
+<link rel="stylesheet" href="/static/css/style.min.css"></link>
+ <!--<meta name="description" content="前言 直接上干货就是，就不废话了。使用场景：分离模块，多站点等~~    一、分离模块自定义视图引擎，设置视图路径格式项目结构图  1.Code: 在Global.asax Application_Start方法中添加自定义的视图引擎using System.Collections.Generic; using System.Web.Mvc; namespace MvcProjectMain.Ar">
+<meta property="og:type" content="article">
+<meta property="og:title" content="asp.net mvc项目自定义区域">
+<meta property="og:url" content="http://hexo.yimo.link/2017/05/12/02.mvc-custom-areas/index.html">
+<meta property="og:site_name" content="AncientWind">
+<meta property="og:description" content="前言 直接上干货就是，就不废话了。使用场景：分离模块，多站点等~~    一、分离模块自定义视图引擎，设置视图路径格式项目结构图  1.Code: 在Global.asax Application_Start方法中添加自定义的视图引擎using System.Collections.Generic; using System.Web.Mvc; namespace MvcProjectMain.Ar">
+<meta property="og:image" content="http://images2015.cnblogs.com/blog/662652/201608/662652-20160810235943465-541781227.png">
+<meta property="og:updated_time" content="2017-05-12T12:56:45.855Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="asp.net mvc项目自定义区域">
+<meta name="twitter:description" content="前言 直接上干货就是，就不废话了。使用场景：分离模块，多站点等~~    一、分离模块自定义视图引擎，设置视图路径格式项目结构图  1.Code: 在Global.asax Application_Start方法中添加自定义的视图引擎using System.Collections.Generic; using System.Web.Mvc; namespace MvcProjectMain.Ar">
+<meta name="twitter:image" content="http://images2015.cnblogs.com/blog/662652/201608/662652-20160810235943465-541781227.png">-->
+  
+  
+    <link rel="icon" href="/static/imgs/favicon.ico">
+  
+</head>
+<body>
+    <header class="ymheader fadeInDown animated" id="ymheader">
+    <div class="bounceInDown animated">
+        <a href="/">
+                    <img src="/static/imgs/logo.png" class="logo" />
+                </a>
+    </div>
+    <nav class="ymmenu bounceInDown animated">
+        
+        <div class="menu dao2_sm32"><a href="/">博客首页</a></div>
+        
+        <div class="menu dao2_sm32"><a href="https://tools.yimo.link/">个人工具</a></div>
+        
+        <div class="menu dao2_sm32"><a href="http://app.yimo.link/">私人定制</a></div>
+        
+        <div class="menu dao2_sm32"><a href="http://www.yimo.link/msg">留言板</a></div>
+        
+    </nav>
+</header>
+
+    <section class="ymcontent " id="ymcontent">
+        <article id="contentrwbg">
+            <img class="oneimg" src="/static/imgs/bg_content2.png" />
+        </article>
+        <article class="ymrightcontent  fadeInUp animated" id="ymrightcontent">
+            <div class="maincontent">
+                <h1 class="arttitle contenttit">asp.net mvc项目自定义区域</h1>
+                <p class="artdesc">
+                    
+                    <span>创建时间：2017-05-12 20:52:57</span>
+                </p>
+                <div class="artcontent">
+                   
+                    <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><blockquote>
+<p>直接上干货就是，就不废话了。<br>使用场景：分离模块，多站点等~~   </p>
+<h2 id="一、分离模块"><a href="#一、分离模块" class="headerlink" title="一、分离模块"></a>一、分离模块</h2><p>自定义视图引擎，设置视图路径格式<br>项目结构图<br><img src="http://images2015.cnblogs.com/blog/662652/201608/662652-20160810235943465-541781227.png" alt=""></p>
+</blockquote>
+<h1 id="1-Code-在Global-asax-Application-Start方法中添加自定义的视图引擎"><a href="#1-Code-在Global-asax-Application-Start方法中添加自定义的视图引擎" class="headerlink" title="1.Code: 在Global.asax Application_Start方法中添加自定义的视图引擎"></a>1.Code: 在Global.asax Application_Start方法中添加自定义的视图引擎</h1><pre><code>using System.Collections.Generic;
+using System.Web.Mvc;
+namespace MvcProjectMain.AreasViewEngine
+{
+
+    /// &lt;summary&gt;       
+    /// 自定义视图引擎
+    /// &lt;/summary&gt;
+    /// &lt;remarks&gt;
+    ///  ViewEngines.Engines.Add(new MvcProjectMain.AreasViewEngine.ThemableRazorViewEngine());
+    /// &lt;/remarks&gt;
+    public class ThemableRazorViewEngine : VirtualPathProviderViewEngine
+    {
+        //所有区域分离到Modules文件夹,{2}为区域名
+        public ThemableRazorViewEngine()
+        {
+            ViewEngines.Engines.Clear();
+            AreaViewLocationFormats = new[]
+            {
+            &quot;~/Modules/{2}/Views/{1}/{0}.cshtml&quot;, 
+            &quot;~/Modules/{2}/Views/Shared/{0}.cshtml&quot;,
+            };
+
+            AreaMasterLocationFormats = new[]
+            {
+            &quot;~/Modules/{2}/Views/{1}/{0}.cshtml&quot;, 
+            &quot;~/Modules/{2}/Views/Shared/{0}.cshtml&quot;,
+            };
+
+            AreaPartialViewLocationFormats = new[]
+            {
+            &quot;~/Modules/{2}/Views/{1}/{0}.cshtml&quot;, 
+            &quot;~/Modules/{2}/Views/Shared/{0}.cshtml&quot;, 
+            };
+
+            ViewLocationFormats = new[]
+            {
+            &quot;~/Views/{1}/{0}.cshtml&quot;, 
+            &quot;~/Views/Shared/{0}.cshtml&quot;,
+            };
+
+            MasterLocationFormats = new[]
+            {
+            &quot;~/Views/{1}/{0}.cshtml&quot;, 
+            &quot;~/Views/Shared/{0}.cshtml&quot;, 
+            };
+            PartialViewLocationFormats = new[]
+            {
+            &quot;~/Views/{1}/{0}.cshtml&quot;, 
+            &quot;~/Views/Shared/{0}.cshtml&quot;, 
+            };
+
+            FileExtensions = new[] { &quot;cshtml&quot; };
+        }
+
+        protected override IView CreatePartialView(ControllerContext controllerContext, string partialPath)
+        {
+            string layoutPath = null;
+            var runViewStartPages = false;
+            IEnumerable&lt;string&gt; fileExtensions = base.FileExtensions;
+            return new RazorView(controllerContext, partialPath, layoutPath, runViewStartPages, fileExtensions);
+        }
+
+        protected override IView CreateView(ControllerContext controllerContext, string viewPath, string masterPath)
+        {
+            string layoutPath = masterPath;
+            var runViewStartPages = true;
+            IEnumerable&lt;string&gt; fileExtensions = base.FileExtensions;
+            return new RazorView(controllerContext, viewPath, layoutPath, runViewStartPages, fileExtensions);
+        }
+    }
+}
+</code></pre><p>2.Code:在Global.asax中添加注册区域–&gt;AreaRegistration.RegisterAllAreas();</p>
+<pre><code>public class ThemesAreaRegistration : AreaRegistration
+    {
+        public override string AreaName
+        {
+            get
+            {
+                return &quot;MvcProjectThemes&quot;;
+            }
+        }
+
+        public override void RegisterArea(AreaRegistrationContext context)
+        {
+            context.MapRoute(
+                &quot;MvcProjectThemes&quot;,
+                &quot;MvcProjectThemes/{controller}/{action}/{id}&quot;,
+                new { controller = &quot;Home&quot;, action = &quot;Index&quot;, id = UrlParameter.Optional, },
+                namespaces: new string[] { &quot;MvcProjectThemes.Controllers&quot; }
+            );
+        }
+    }
+</code></pre><p>3.Code:注册主项目MvcProjectMain的路由 RouteConfig.RegisterRoutes(RouteTable.Routes);</p>
+<pre><code>namespace MvcProjectMain
+{
+    public class RouteConfig
+    {
+        public static void RegisterRoutes(RouteCollection routes)
+        {
+            routes.IgnoreRoute(&quot;{resource}.axd/{*pathInfo}&quot;);
+
+            routes.MapRoute(
+                name: &quot;Default&quot;,
+                url: &quot;{controller}/{action}/{id}&quot;,
+                defaults: new { controller = &quot;Home&quot;, action = &quot;Index&quot;, id = UrlParameter.Optional },
+                namespaces: new string[] { &quot;MvcProjectMain.Controllers&quot; }
+            );
+        }
+    }
+}
+</code></pre><h1 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h1><p>主要代码就是步骤1中的ThemableRazorViewEngine.cs类。自定义查找路径，其他的都是MVC的基础知识了,不懂自行查阅资料</p>
+
+                    
+                </div>
+                <div class="listfooter">
+                </div>
+            </div>
+            <div class="artfooter">
+                
+                <div id="SOHUCS" sid="asp.net mvc项目自定义区域"></div>
+                
+            </div>
+        </article>  
+        <article id="ymsidenav" class="ymsidenav fadeInDown animated">
+            <div class="search">
+                <form method="get" action="/search">
+                    <input type="search" name="key" class="searchtxt" placeholder="我就看看..." />
+                    <input type="submit" style="display:none" />
+                </form>
+            </div>
+            
+<div id="tagscloud">
+        
+    <a href="/tags/hexo" class="tagc1">hexo</a>
+        
+</div>
+                <div class="listtit">
+    <span class="txt">友情链接</span>
+</div>
+<ul class="ymlistyle">
+    
+        
+    <li>
+        <a href="http://www.yimo.link/" class="litit">易墨博客</a>
+    
+    </li>
+        
+</ul>
+        </article>
+    </section>
+    <article id="ymgotop">  
+    <a href="javascript:window.scroll(0,0);">
+        <img src="/static/imgs/gotop.png" />
+    </a>    
+</article>
+        <footer class="ymfooter fadeInUp animated" id="ymfooter">
+    <a href="#" class="shake shake-horizontal">一下午弄出来的~就这样~ By 易墨</a>
+</footer>
+        
+    <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
+    <script type="text/javascript">
+        window.changyan.api.config({appid: 'cys5no60I',conf: 'prod_b1c091f2c20426abdaa5aa83a7f0c12c'});
+    </script>    
+        
+    <script src="/static/js/main.min.js" type="text/javascript"></script>
+</body>
+</html>
